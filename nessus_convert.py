@@ -41,19 +41,19 @@ cwes ={
 "25": "Path Traversal: '/../filedir'",
 "26": "Path Traversal: '/dir/../filename'",
 "27": "Path Traversal: 'dir/../../filename'",
-"28": "Path Traversal: '..\filedir'",
-"29": "Path Traversal: '\..\filename'",
-"30": "Path Traversal: '\dir\..\filename'",
-"31": "Path Traversal: 'dir\..\..\filename'",
+"28": "Path Traversal: '..\\filedir'",
+"29": "Path Traversal: '\\..\\filename'",
+"30": "Path Traversal: '\\dir\\..\\filename'",
+"31": "Path Traversal: 'dir\\..\\..\\filename'",
 "32": "Path Traversal: '...' (Triple Dot)",
 "33": "Path Traversal: '....' (Multiple Dot)",
 "34": "Path Traversal: '....//'",
 "35": "Path Traversal: '.../...//'",
 "36": "Absolute Path Traversal",
 "37": "Path Traversal: '/absolute/pathname/here'",
-"38": "Path Traversal: '\absolute\pathname\here'",
+"38": "Path Traversal: '\\absolute\\pathname\\here'",
 "39": "Path Traversal: 'C:dirname'",
-"40": "Path Traversal: '\\UNC\share\name\' (Windows UNC Share)",
+"40": "Path Traversal: '\\\\UNC\\share\\name\\' (Windows UNC Share)",
 "41": "Improper Resolution of Path Equivalence",
 "42": "Path Equivalence: 'filename.' (Trailing Dot)",
 "43": "Path Equivalence: 'filename....' (Multiple Trailing Dot)",
@@ -66,8 +66,8 @@ cwes ={
 "50": "Path Equivalence: '//multiple/leading/slash'",
 "51": "Path Equivalence: '/multiple//internal/slash'",
 "52": "Path Equivalence: '/multiple/trailing/slash//'",
-"53": "Path Equivalence: '\multiple\\internal\backslash'",
-"54": "Path Equivalence: 'filedir\' (Trailing Backslash)",
+"53": "Path Equivalence: '\\multiple\\\\internal\\backslash'",
+"54": "Path Equivalence: 'filedir\\' (Trailing Backslash)",
 "55": "Path Equivalence: '/./' (Single Dot Directory)",
 "56": "Path Equivalence: 'filedir*' (Wildcard)",
 "57": "Path Equivalence: 'fakedir/../realdir/filename'",
@@ -1121,8 +1121,8 @@ def generate_sample_findings(defects):
         path = ','.join(hosts)
         if len(path)>64:
             path=path[0:64]+"..."
-        parameter = uuid.uuid4()
-        print issue % (uuid.uuid4(), type, severity, path, parameter,description)
+        parameter = str(uuid.uuid4()).replace('-','')
+        print issue % (str(uuid.uuid4()).replace('-',''), type, severity, path, parameter,description)
     
     print "</nessusIssues>"
     

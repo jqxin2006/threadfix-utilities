@@ -132,7 +132,7 @@ def generate_sample_findings():
             desc = "".join([x if ord(x) < 128 else '?' for x in defect[0]])
             (vulnType,severity,parameter,path) = get_details(defect)
             severity = severity_list[int(severity)]
-            if count <=20:
+            if count <=40:
                 description = desc
                 description = description.replace("\n", NEW_LINE)
                 description = description.replace(" ", NEW_WHITESPACE)
