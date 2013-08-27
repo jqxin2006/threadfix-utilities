@@ -1,0 +1,10 @@
+*.xml
+*.war
+*.csv
+*.txt
+*.nessus
+*.tar
+*.tar.gz
+*.json
+*.sql
+*.sqlite3
