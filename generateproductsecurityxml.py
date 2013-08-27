@@ -8,6 +8,7 @@ import uuid
 import re
 import time
 from xml.sax.saxutils import escape
+import argparse
 
 
 
@@ -20,6 +21,20 @@ data_filename = "production.sqlite3"
 
 query1 = "select distinct  nodes.id, nodes.label from nodes inner join notes where notes.node_id=nodes.id and notes.category_id=10;"
 query2 = "select notes.text from notes where notes.category_id=10 and notes.node_id=%s"
+desc = '''This script generate some sample  scanning result for Threadfix usage. 
+Example Usage:
+	       python nessus_convert.py 20   -t "Mon Aug 7 20:52:47 CDT 2013" > nessusSYD.xml
+	       '''
+parser = argparse.ArgumentParser(description=desc,  add_help=True)
+parser.add_argument("number", help="The number of results")
+parser.add_argument("-t", "--time", help="The scan time of this format('Mon Aug 7 20:52:47 CDT 2013')")
+
+args = parser.parse_args()
+
+if args.time is not None:
+    scan_time = args.time
+
+number_issues = int(args.number)
 
 
 def query_database(query):
@@ -109,7 +124,7 @@ def generate_sample_findings():
 <!ELEMENT parameter (#PCDATA)>
 <!ELEMENT longDescription (#PCDATA)>
 ]>
-<issues ProductSecurityTestVersion="1.0" testTime="Mon Jun 18 14:52:47 CDT 2013">'''
+<issues ProductSecurityTestVersion="1.0" testTime="%s">''' % scan_time
     print header
     issue = '''
   <issue>
@@ -132,7 +147,7 @@ def generate_sample_findings():
             desc = "".join([x if ord(x) < 128 else '?' for x in defect[0]])
             (vulnType,severity,parameter,path) = get_details(defect)
             severity = severity_list[int(severity)]
-            if count <=40:
+            if count <=number_issues:
                 description = desc
                 description = description.replace("\n", NEW_LINE)
                 description = description.replace(" ", NEW_WHITESPACE)

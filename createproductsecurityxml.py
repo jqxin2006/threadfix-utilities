@@ -11,7 +11,7 @@ from xml.sax.saxutils import escape
 import argparse
 import paramiko
 
-desc = '''This script generates XML file from Dradis notes on the server 10.23.245.200. The script first downloads the latest version of production.sqlite3 from the server. Then, the script reads all "identified issues" from given node with given label.  The converted XML can be saved into a given file which can be used to upload to Threadfixt. \n 
+desc = '''This script generates XML file from Dradis notes on the server. The script first downloads the latest version of production.sqlite3 from the server. Then, the script reads all "identified issues" from given node with given label.  The converted XML can be saved into a given file which can be used to upload to Threadfixt. \n 
 Example Usage:
      python createproductsecurityxml.py    "Mon Aug 7 20:52:47 CDT 2013"  "Action Logs" -o productsecurityResult.xml
 	       '''
@@ -36,7 +36,7 @@ if args.outputfile is not None:
 
 
 
-host = "10.23.245.200"                    #hard-coded
+host = "127.0.0.1"                    #hard-coded
 port = 22
 transport = paramiko.Transport((host, port))
 
@@ -186,114 +186,3 @@ def generate_sample_findings(outputfile):
 
 generate_sample_findings(outputfile)
 
-def add_all_defects():
-    count =0
-    defect_count = 0
-    filename = "mapping_v2.csv"
-    mapping = get_mapping(filename)
-    print mapping
-    print len(mapping)
-    for row in applications:
-        count+=1
-        print row[1]
-	type = row[1].strip()
-        #print get_application(1,count)
-        app_id = mapping[type]
-	team_id = '1'
-	if app_id in ["9","10","11"]:
-	    team_id = '2'
-	
-        defects = query_database(query2 % row[0])
-        severity_list =[59,60,61,62,63]
-        for defect in defects:
-            (vulnType,severity,parameter,path) = get_details(defect)
-            finding1 = {"apiKey": api_key, 
-                        "vulnType": vulnType,
-                        "severity": severity_list[int(severity)],
-                        "nativeId": "nativeId",
-                        "parameter": parameter,
-                        "longDescription":defect,
-                        "fullUrl": "http://www.rackspace.com/fullUrl",
-                        "path":path}
-            #print finding1
-            defect_count += 1
-        
-            if (defect_count<=258):
-                continue
-            else:
-                time.sleep(0.4)
-                add_finding(team_id,app_id, finding1)
-		print "**** Added %s, %s defect:  %s ****" % (team_id, app_id, defect_count)
-    
-    
- 
-severity_list =[59,60,61,62,63]
-def test_severity(): 
-    for sev in range(0,5):
-        finding1 = {"apiKey": api_key, 
-   "vulnType": "Information Exposure Through Browser Caching",
-   "severity": severity_list[sev],
-   "nativeId": "nativeId",
-   "parameter": uuid.uuid4(),
-   "longDescription":"test with severity of %s" % sev,
-   "fullUrl": "http://www.rackspace.com/fullUrl",
-   "path":uuid.uuid4()}
-        #print finding1
-        time.sleep(1)
-        add_finding(1, finding1)
-          
-
-
-def test_vul(): 
-    count =0
-    defect_count = 0
-    all_types=set()
-    for row in applications:
-        count+=1
-        print row[1]
-        defects = query_database(query2 % row[0])
-        for defect in defects:
-            (vulnType,severity,parameter,path) = get_details(defect)
-            finding1 = {"apiKey": api_key, 
-   "vulnType": vulnType,
-   "severity": 5-int(severity),
-   "nativeId": "nativeId",
-   "parameter": parameter,
-   "longDescription":defect,
-   "fullUrl": "http://www.rackspace.com/fullUrl",
-   "path":path}
-        #print finding1
-            defect_count += 1
-            print (vulnType,severity,parameter,path)
-            all_types.add(vulnType)
-        
-            if (defect_count<=0):
-                continue
-            else:
-                #time.sleep(5)
-                #add_finding(count, finding1)
-                print "Added defect %s" % defect_count
-  
-    print all_types 
-    for type in all_types:
-        finding1 = {"apiKey": api_key, 
-   "vulnType": type,
-   "severity": 1,
-   "nativeId": "nativeId",
-   "parameter": "test",
-   "longDescription":"test",
-   "fullUrl": "http://www.rackspace.com/fullUrl",
-   "path":"test"}
-        time.sleep(3)
-        if (not add_finding(1, finding1)):
-            print type
-         
-    print count
-
-#add_finding(finding1)
-#add_finding(finding2)
-#create_all_applications()
-#add_all_defects()
-#test_severity()
-#create_application(1, "mytest", "http://www.rackspace.com")
-#get_team(1)
