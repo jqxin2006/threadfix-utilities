@@ -351,7 +351,7 @@ def test_vul():
 #add_finding(finding1)
 #add_finding(finding2)
 #create_all_applications()
-add_all_defects()
+#add_all_defects()
 #test_severity()
 #create_application(1, "mytest", "http://www.rackspace.com")
 #get_team(1)

@@ -7,14 +7,28 @@ import requests
 import uuid
 import re
 import time
-
+import json
 
 
 api_key = "BczZc0eYFtgKYIwDSlWgESnYoYou5sj4xSNwSMlUyWI"
 base_url = "https://localhost:8443/threadfix/rest/" 
 url = "%s/teams/?apiKey=%s" % (base_url,api_key)
 r = requests.get(url, verify=False)
-#print r.text
+jsontest =  r.text
+the_json =  json.loads(jsontest)
+count = 0
+for team in the_json:
+	applications =  team['applications']
+	for application in applications:
+		vulnerabilities = application['vulnerabilities']
+		for vul in vulnerabilities:
+			count+=1
+
+print count
+
+
+
+sys.exit(1)
 
 sqlInjection = "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
 xss = "Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"

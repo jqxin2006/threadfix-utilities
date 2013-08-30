@@ -974,7 +974,7 @@ desc = '''This script converts Nessus scanning result to Rackspace Nessus format
 Example Usage:
        python nessus_convert.py nessus_report_SYDCloudBackup__scheduled_20130601.nessus  -t "Mon Aug 7 20:52:47 CDT 2013" > nessusSYD.xml
 '''
-parser = argparse.ArgumentParser(description=desc,  add_help=True)
+parser = argparse.ArgumentParser(description=desc,  add_help=True, formatter_class=argparse.RawDescriptionHelpFormatter)
 
 parser.add_argument("filename", help="The file name of Nessus scanning result to be converted")
 parser.add_argument("-t", "--time", help="The scan time of this format('Mon Aug 7 20:52:47 CDT 2013')")
@@ -1023,7 +1023,11 @@ for host in hostlist:
             pass
         else:
             defects[the_id]={"hosts":set(),"severity":"", "type":"","path":"", "parameter":"", "description":""}
-            defects[the_id]["severity"] = severity_list[int(the_severity)]
+	    if (int(the_severity) in range(0,5)):
+		    defects[the_id]["severity"] = severity_list[int(the_severity)]
+	    else:
+		    defects[the_id]["severity"] = "Info"
+	            print "Can not find severity and use Info instead"
             if cwe_map.has_key(the_id):
                 the_type = cwe_map[the_id]
             else:
